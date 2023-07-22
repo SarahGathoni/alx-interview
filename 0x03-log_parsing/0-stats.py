@@ -17,21 +17,20 @@ def print_statistics():
 
 try:
     line_count = 0
-    for line in sys.stdin:
+    for i in range(10000):
+        sleep(random.random())
+        line = "{:d}.{:d}.{:d}.{:d} - [{}] \"GET /projects/260 HTTP/1.1\" {} {}\n".format(
+            random.randint(1, 255), random.randint(1, 255), random.randint(1, 255), random.randint(1, 255),
+            datetime.datetime.now(),
+            random.choice([200, 301, 400, 401, 403, 404, 405, 500]),
+            random.randint(1, 1024)
+        )
+        sys.stdout.write(line)
+        sys.stdout.flush()
+
         line_count += 1
         if line_count % 10 == 0:
             print_statistics()
-
-        parts = line.split()
-        if len(parts) != 7:
-            continue
-
-        ip, _, _, request, status_code, size, _ = parts
-        if not status_code.isdigit() or status_code not in status_codes:
-            continue
-
-        file_sizes.append(int(size))
-        status_counts[status_code] += 1
 
 except KeyboardInterrupt:
     print("\n[Keyboard Interrupt] Printing final statistics:")
